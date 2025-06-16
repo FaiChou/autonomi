@@ -109,6 +109,16 @@ impl TracingLayers {
         print_updates_to_stdout: bool,
     ) -> Result<ReloadHandle> {
         let layer = match output_dest {
+            LogOutputDest::Disable => {
+                if print_updates_to_stdout {
+                    println!("Logging is disabled");
+                }
+                tracing_fmt::layer()
+                    .with_ansi(false)
+                    .with_target(false)
+                    .with_filter(tracing_subscriber::filter::Targets::new())
+                    .boxed()
+            }
             LogOutputDest::Stdout => {
                 if print_updates_to_stdout {
                     println!("Logging to stdout");

@@ -118,7 +118,7 @@ pub(crate) struct Opt {
 
     /// Specify the logging output destination.
     ///
-    /// Valid values are "stdout", "data-dir", or a custom path.
+    /// Valid values are "stdout", "data-dir", "disable", or a custom path.
     ///
     /// `data-dir` is the default value.
     ///

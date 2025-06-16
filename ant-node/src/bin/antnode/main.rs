@@ -49,6 +49,7 @@ pub enum LogOutputDestArg {
     Stdout,
     DataDir,
     Path(PathBuf),
+    Disable,
 }
 
 impl std::fmt::Display for LogOutputDestArg {
@@ -57,6 +58,7 @@ impl std::fmt::Display for LogOutputDestArg {
             LogOutputDestArg::Stdout => write!(f, "stdout"),
             LogOutputDestArg::DataDir => write!(f, "data-dir"),
             LogOutputDestArg::Path(path) => write!(f, "{}", path.display()),
+            LogOutputDestArg::Disable => write!(f, "disable"),
         }
     }
 }
@@ -65,6 +67,7 @@ pub fn parse_log_output(val: &str) -> Result<LogOutputDestArg> {
     match val {
         "stdout" => Ok(LogOutputDestArg::Stdout),
         "data-dir" => Ok(LogOutputDestArg::DataDir),
+        "disable" => Ok(LogOutputDestArg::Disable),
         // The path should be a directory, but we can't use something like `is_dir` to check
         // because the path doesn't need to exist. We can create it for the user.
         value => Ok(LogOutputDestArg::Path(PathBuf::from(value))),
@@ -111,7 +114,7 @@ struct Opt {
 
     /// Specify the logging output destination.
     ///
-    /// Valid values are "stdout", "data-dir", or a custom path.
+    /// Valid values are "stdout", "data-dir", "disable", or a custom path.
     ///
     /// `data-dir` is the default value.
     ///
@@ -540,6 +543,7 @@ fn init_logging(opt: &Opt, peer_id: PeerId) -> Result<(String, ReloadHandle, Opt
             LogOutputDest::Path(path)
         }
         LogOutputDestArg::Path(path) => LogOutputDest::Path(path.clone()),
+        LogOutputDestArg::Disable => LogOutputDest::Disable,
     };
 
     #[cfg(not(feature = "otlp"))]

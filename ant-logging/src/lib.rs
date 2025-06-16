@@ -32,12 +32,14 @@ pub enum LogOutputDest {
     Stderr,
     Stdout,
     Path(PathBuf),
+    Disable,
 }
 
 impl LogOutputDest {
     pub fn parse_from_str(val: &str) -> Result<Self> {
         match val {
             "stdout" => Ok(LogOutputDest::Stdout),
+            "disable" => Ok(LogOutputDest::Disable),
             "data-dir" => {
                 // Get the current timestamp and format it to be human readable
                 let timestamp = chrono::Local::now().format("%Y-%m-%d_%H-%M-%S").to_string();
@@ -70,6 +72,7 @@ impl std::fmt::Display for LogOutputDest {
             LogOutputDest::Stderr => write!(f, "stderr"),
             LogOutputDest::Stdout => write!(f, "stdout"),
             LogOutputDest::Path(p) => write!(f, "{}", p.to_string_lossy()),
+            LogOutputDest::Disable => write!(f, "disable"),
         }
     }
 }
